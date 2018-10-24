@@ -1,0 +1,62 @@
+<joblist>
+  <job>
+    <defaultTab>output</defaultTab>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <group>MultilinesRegex</group>
+    <loglevel>INFO</loglevel>
+    <name>pretty-sql-print</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <plugins>
+          <LogFilter type='key-value-data-multilines'>
+            <config>
+              <hideOutput>true</hideOutput>
+              <logData>false</logData>
+              <name>sql</name>
+              <regex>^.*name\s*(.+)$</regex>
+            </config>
+          </LogFilter>
+        </plugins>
+        <script><![CDATA[mysql -h mysqlserver --username=username --password=password -e "listprojects.sql"]]></script>
+        <scriptargs />
+      </command>
+      <command>
+        <fileExtension>.py</fileExtension>
+        <plugins>
+          <LogFilter type='render-datatype'>
+            <config>
+              <datatype>text/html</datatype>
+            </config>
+          </LogFilter>
+        </plugins>
+        <script><![CDATA[sallist="""@data.sql@"""
+
+print("<table class='table table-striped'>")
+print("<tr>")
+print("<th>id</th>")
+print("<th>name</th>")
+print("<th>data created</th>")
+print("<th>description</th>")
+print("</tr>")
+
+for line in sallist.splitlines():
+    column=line.split("\t")
+    print("<tr>")
+    print("<th>%s</th>" % column[0])
+    print("<td>%s</td>" % column[5])
+    print("<td>%s</td>" % column[2])
+    print("<td>%s</td>" % column[3])
+    print("</tr>")
+
+
+print("</table>")
+]]></script>
+        <scriptargs />
+        <scriptinterpreter>python</scriptinterpreter>
+      </command>
+    </sequence>
+  </job>
+</joblist>

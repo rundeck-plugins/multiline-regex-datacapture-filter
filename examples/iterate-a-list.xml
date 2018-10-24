@@ -1,0 +1,44 @@
+<joblist>
+  <job>
+    <defaultTab>summary</defaultTab>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <group>MultilinesRegex</group>
+    <loglevel>INFO</loglevel>
+    <name>iterate-a-list</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <plugins>
+          <LogFilter type='key-value-data-multilines'>
+            <config>
+              <hideOutput>false</hideOutput>
+              <logData>true</logData>
+              <regex>^\s*(.+?)\s=\s*(.*)</regex>
+            </config>
+          </LogFilter>
+        </plugins>
+        <script><![CDATA[#Your script here
+cat <<-END
+some_list = first_element
+second_element
+third_element
+fourth_element
+END]]></script>
+        <scriptargs />
+      </command>
+      <command>
+        <fileExtension>.py</fileExtension>
+        <script><![CDATA[list="""@data.list@"""
+
+i=0
+for line in list.splitlines():
+    print("checking line %s: %s" % (i,line))
+    i=i+1]]></script>
+        <scriptargs />
+        <scriptinterpreter>python</scriptinterpreter>
+      </command>
+    </sequence>
+  </job>
+</joblist>

@@ -1,0 +1,27 @@
+<joblist>
+  <job>
+    <defaultTab>summary</defaultTab>
+    <description></description>
+    <executionEnabled>true</executionEnabled>
+    <group>MultilinesRegex</group>
+    <loglevel>INFO</loglevel>
+    <name>capture-ls-command</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <exec>ls -l</exec>
+        <plugins>
+          <LogFilter type='key-value-data-multilines'>
+            <config>
+              <hideOutput>false</hideOutput>
+              <logData>true</logData>
+              <name>ls</name>
+              <regex>^\s*total\s[0-9]+\s*(.*)</regex>
+            </config>
+          </LogFilter>
+        </plugins>
+      </command>
+    </sequence>
+  </job>
+</joblist>
