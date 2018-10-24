@@ -42,3 +42,4 @@ cp build/lib/multiline-regex-datacapture-filter-X.X.X.jar $RDECKBASE/libext
 
 ![Example3](examples/example3-result.png)
 
+
