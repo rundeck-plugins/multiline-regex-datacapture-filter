@@ -100,25 +100,34 @@ See the [Java Pattern](https://docs.oracle.com/javase/8/docs/api/java/util/regex
     void complete(final PluginLoggingContext context) {
 
         if(buffer.size()>0){
-            Matcher match = dataPattern.matcher(buffer.toString())
 
-            if (match.matches()) {
-                def key,value
+            for (String line : buffer.toString().split((System.getProperty("line.separator")))) {
 
-                if(match.groupCount()>0){
-                    if(match.groupCount()==1 && name){
-                        key = name
-                        value = match.group(1)
-                    }else {
-                        if(match.groupCount()>1){
-                            key = match.group(1)
-                            value = match.group(2)
+                Matcher match = dataPattern.matcher(line)
+
+                if (match.matches()) {
+                    def key, value
+
+                    if (match.groupCount() > 0) {
+                        if (match.groupCount() == 1 && name) {
+                            key = name
+                            value = match.group(1)
+                        } else {
+                            if (match.groupCount() > 1) {
+                                key = match.group(1)
+                                value = match.group(2)
+                            }
                         }
-                    }
 
-                    if (key && value) {
-                        allData[key] = value
-                        outputContext.addOutput("data", key, value)
+                        if (key && value) {
+
+                            if(allData[key] == null ) {
+                                allData[key] = value
+                            } else {
+                                allData[key] = allData[key] + System.getProperty("line.separator") + value
+                            }
+                            outputContext.addOutput("data", key, value)
+                        }
                     }
                 }
             }
