@@ -120,7 +120,12 @@ See the [Java Pattern](https://docs.oracle.com/javase/8/docs/api/java/util/regex
                         }
 
                         if (key && value) {
-                            allData[key] = value
+
+                            if(allData[key] == null ) {
+                                allData[key] = value
+                            } else {
+                                allData[key] = allData[key] + System.getProperty("line.separator") + value
+                            }
                             outputContext.addOutput("data", key, value)
                         }
                     }
