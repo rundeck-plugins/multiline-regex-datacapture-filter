@@ -51,6 +51,14 @@ See the [Java Pattern](https://docs.oracle.com/javase/8/docs/api/java/util/regex
     Boolean hideOutput
 
     @PluginProperty(
+            title = 'Capture multiple values',
+            description = '''If true, each line is scanned separately to match the regex, capturing multiple key/value pairs. 
+If it just capture one group, each matched value will be added for the same key''',
+            defaultValue = 'false'
+    )
+    Boolean captureMultipleKeysValues
+
+    @PluginProperty(
             title = 'Log Data',
             description = '''If true, log the captured data''',
             defaultValue = 'false'
@@ -87,7 +95,11 @@ See the [Java Pattern](https://docs.oracle.com/javase/8/docs/api/java/util/regex
     @Override
     void handleEvent(final PluginLoggingContext context, final LogEventControl event) {
         if (event.eventType == 'log' && event.loglevel == LogLevel.NORMAL && event.message?.length() > 0) {
-            buffer.append(event.message).append(System.getProperty("line.separator"))
+            if(captureMultipleKeysValues){
+                extractKeyValue(event.message)
+            } else {
+                buffer.append(event.message).append(System.getProperty("line.separator"))
+            }
 
             if(hideOutput){
                 event.loglevel = LogLevel.DEBUG
@@ -98,30 +110,12 @@ See the [Java Pattern](https://docs.oracle.com/javase/8/docs/api/java/util/regex
 
     @Override
     void complete(final PluginLoggingContext context) {
-
         if(buffer.size()>0){
-            Matcher match = dataPattern.matcher(buffer.toString())
+            extractKeyValue(buffer.toString())
+        }
 
-            if (match.matches()) {
-                def key,value
-
-                if(match.groupCount()>0){
-                    if(match.groupCount()==1 && name){
-                        key = name
-                        value = match.group(1)
-                    }else {
-                        if(match.groupCount()>1){
-                            key = match.group(1)
-                            value = match.group(2)
-                        }
-                    }
-
-                    if (key && value) {
-                        allData[key] = value
-                        outputContext.addOutput("data", key, value)
-                    }
-                }
-            }
+        if(!allData.isEmpty()){
+            allData.each {outputContext.addOutput("data", it.getKey(), it.getValue())}
 
             if (logData) {
                 context.log(
@@ -134,6 +128,33 @@ See the [Java Pattern](https://docs.oracle.com/javase/8/docs/api/java/util/regex
                 )
             }
         }
+    }
 
+    private void extractKeyValue(String output){
+        Matcher match = dataPattern.matcher(output)
+
+        if (match.matches()) {
+            def key,value
+
+            if(match.groupCount()>0){
+                if(match.groupCount()==1 && name){
+                    key = name
+                    value = match.group(1)
+                }else {
+                    if(match.groupCount()>1){
+                        key = match.group(1)
+                        value = match.group(2)
+                    }
+                }
+
+                if (key && value) {
+                    if(allData[key]) {
+                        allData[key] += "\n$value"
+                    } else {
+                        allData[key] = value
+                    }
+                }
+            }
+        }
     }
 }
