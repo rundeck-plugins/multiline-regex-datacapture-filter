@@ -6,7 +6,7 @@ plugins {
 
 group 'com.rundeck.plugin'
 
-ext.rundeckVersion='3.0.6-20180917'
+ext.rundeckVersion='5.11.1-20250415'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 group 'com.rundeck.plugin'
@@ -29,7 +29,7 @@ scmVersion {
 }
 project.version = scmVersion.version
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 
 /**
@@ -57,11 +57,11 @@ configurations{
 
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.3.11'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.codehaus.groovy:groovy-all:2.3.11'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 
-    compile group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion
-    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+    implementation group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion
+    testImplementation "org.spockframework:spock-core:0.7-groovy-2.0"
 
 }
 
