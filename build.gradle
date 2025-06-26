@@ -90,11 +90,19 @@ jar {
     from "$buildDir/output"
     manifest {
         def libList = configurations.pluginLibs.collect{'lib/'+it.name}.join(' ')
+        attributes 'Rundeck-Plugin-Name' : 'Multiline Regex Data Capture'
+        attributes 'Rundeck-Plugin-Description' : 'This plugin captures Multiline Regex Key/Value data using a simple text format from a regular expression.'
+        attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.0.6+'
+        attributes 'Rundeck-Plugin-Tags': 'java,log filter'
+        attributes 'Rundeck-Plugin-License': 'Apache 2.0'
+        attributes 'Rundeck-Plugin-Source-Link': 'https://github.com/rundeck-plugins/multiline-regex-datacapture-filter'
+        attributes 'Rundeck-Plugin-Target-Host-Compatibility': 'all'
+        attributes 'Rundeck-Plugin-Author': 'Rundeck, Inc.'
         attributes 'Rundeck-Plugin-Classnames': pluginClassNames
         attributes 'Rundeck-Plugin-File-Version': version
         attributes 'Rundeck-Plugin-Version': rundeckPluginVersion, 'Rundeck-Plugin-Archive': 'true'
         attributes 'Rundeck-Plugin-Libs': "${libList}"
-        attributes 'Main-Class': "io.github.valfadeev.rundeck.plugin.vault.VaultStoragePlugin"
+        attributes 'Main-Class': "com.rundeck.plugin.DataKeyFilterMultiLines"
         attributes 'Class-Path': "${libList} lib/rundeck-core-${rundeckVersion}.jar"
     }
 }
