@@ -14,7 +14,7 @@ ext.developers = [
         [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
 ]
 
-ext.rundeckVersion='5.14.0-20250804'
+ext.rundeckVersion='5.14.0-rc1-20250722'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 group 'org.rundeck.plugins'
