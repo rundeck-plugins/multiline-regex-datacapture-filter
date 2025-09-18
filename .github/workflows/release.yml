@@ -25,6 +25,32 @@ jobs:
       - name: Get Release Version
         id: get_version
         run: VERSION=$(./gradlew currentVersion -q -Prelease.quiet) && echo ::set-output name=VERSION::$VERSION
+      - name: Update Fallback Version in Main Branch
+        run: |
+          # Create a temporary branch from main to update the fallback version
+          git fetch origin main
+          git checkout main
+          git pull origin main
+          
+          echo "Updating fallback version to ${{ steps.get_version.outputs.VERSION }}"
+          echo "# Fallback version for CI environments where Git history is not available" > gradle.properties
+          echo "# This is automatically updated during the release process" >> gradle.properties  
+          echo "fallback.version=${{ steps.get_version.outputs.VERSION }}" >> gradle.properties
+          
+          # Check if there are changes to commit
+          if ! git diff --quiet gradle.properties; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add gradle.properties
+            git commit -m "Update fallback version to ${{ steps.get_version.outputs.VERSION }} [skip ci]"
+            git push origin main
+            echo "Updated fallback version in main branch"
+          else
+            echo "No changes needed to gradle.properties"
+          fi
+          
+          # Switch back to the tag for the rest of the release process
+          git checkout ${{ github.ref_name }}
       - name: Create Release
         id: create_release
         run: |
