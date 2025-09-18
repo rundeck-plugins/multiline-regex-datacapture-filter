@@ -20,7 +20,7 @@ ext.rundeckPluginVersion= '1.2'
 group 'org.rundeck.plugins'
 
 scmVersion {
-    ignoreUncommittedChanges = false
+    ignoreUncommittedChanges = true
     tag {
         prefix = ''
         versionSeparator = ''
@@ -35,14 +35,8 @@ scmVersion {
         }
     }
 }
+
 project.version = scmVersion.version
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    withJavadocJar()
-    withSourcesJar()
-}
-
 
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
