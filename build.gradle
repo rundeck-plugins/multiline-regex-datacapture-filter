@@ -20,7 +20,7 @@ ext.rundeckPluginVersion= '1.2'
 group 'org.rundeck.plugins'
 
 scmVersion {
-    ignoreUncommittedChanges = false
+    ignoreUncommittedChanges = true
     tag {
         prefix = ''
         versionSeparator = ''
@@ -35,7 +35,15 @@ scmVersion {
         }
     }
 }
-project.version = scmVersion.version
+
+// Handle cases where Git history is not available (e.g., Snyk scans)
+try {
+    project.version = scmVersion.version
+} catch (Exception e) {
+    // Fallback version when Git history is not accessible
+    project.version = '1.1.5'
+    println "Warning: Could not determine version from Git, using fallback version: ${project.version}"
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
