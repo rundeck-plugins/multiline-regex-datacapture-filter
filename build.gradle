@@ -36,11 +36,7 @@ scmVersion {
     }
 }
 
-// Handle cases where Git history is not available (e.g., Snyk scans)
-
 project.version = scmVersion.version
-
-
 
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
