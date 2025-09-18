@@ -36,7 +36,13 @@ scmVersion {
     }
 }
 
-project.version = scmVersion.version
+// Use a fixed version in CI environments where Git history may be incomplete
+if (System.getenv("CI") || System.getenv("GITHUB_ACTIONS")) {
+    project.version = project.property('fallback.version')
+    println "CI environment detected, using fallback version: ${project.version}"
+} else {
+    project.version = scmVersion.version
+}
 
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
