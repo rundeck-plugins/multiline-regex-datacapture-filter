@@ -1,11 +1,17 @@
 plugins {
     id 'groovy'
     id 'java'
-    id 'pl.allegro.tech.build.axion-release' version '1.7.1'
+    id 'pl.allegro.tech.build.axion-release' version '1.14.0'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
 }
 
 group 'org.rundeck.plugins'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
 
 ext.publishName = "Multiline Regex Datacapture Filter ${project.version}"
 ext.publishDescription = project.description ?: 'Multiline Regex Datacapture Filter Plugin'
@@ -14,7 +20,7 @@ ext.developers = [
         [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
 ]
 
-ext.rundeckVersion='5.14.0-rc1-20250722'
+ext.rundeckVersion='5.16.0-20251006'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 group 'org.rundeck.plugins'
@@ -24,15 +30,6 @@ scmVersion {
     tag {
         prefix = ''
         versionSeparator = ''
-        def origDeserialize=deserialize
-        //apend .0 to satisfy semver if the tag version is only X.Y
-        deserialize = { config, position, tagName ->
-            def orig = origDeserialize(config, position, tagName)
-            if (orig.split('\\.').length < 3) {
-                orig += ".0"
-            }
-            orig
-        }
     }
 }
 
@@ -55,19 +52,19 @@ configurations{
     //declare custom pluginLibs configuration to include only libs for this plugin
     pluginLibs
 
-    //declare compile to extend from pluginLibs so it inherits the dependencies
-    compile{
+    //declare implementation to extend from pluginLibs so it inherits the dependencies
+    implementation{
         extendsFrom pluginLibs
     }
 }
 
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:2.3.11'
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.apache.groovy:groovy-all:4.0.21'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
     implementation group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion
-    testImplementation "org.spockframework:spock-core:0.7-groovy-2.0"
+    testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
 
 }
 
@@ -88,7 +85,6 @@ jar {
         attributes 'Rundeck-Plugin-File-Version': version
         attributes 'Rundeck-Plugin-Version': rundeckPluginVersion, 'Rundeck-Plugin-Archive': 'true'
         attributes 'Rundeck-Plugin-Libs': "${libList}"
-        attributes 'Main-Class': "io.github.valfadeev.rundeck.plugin.vault.VaultStoragePlugin"
         attributes 'Class-Path': "${libList} lib/rundeck-core-${rundeckVersion}.jar"
     }
 }
