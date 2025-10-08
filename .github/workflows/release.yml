@@ -34,7 +34,7 @@ jobs:
           
           echo "Updating fallback version to ${{ steps.get_version.outputs.VERSION }}"
           echo "# Fallback version for CI environments where Git history is not available" > gradle.properties
-          echo "# This is automatically updated during the release process" >> gradle.properties  
+          echo "# This should be updated automatically during the release process" >> gradle.properties  
           echo "fallback.version=${{ steps.get_version.outputs.VERSION }}" >> gradle.properties
           
           # Check if there are changes to commit
