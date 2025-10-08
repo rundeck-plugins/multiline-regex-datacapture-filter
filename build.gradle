@@ -63,7 +63,10 @@ dependencies {
     implementation 'org.apache.groovy:groovy-all:4.0.21'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
-    implementation group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion
+    implementation(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
+        // Exclude vulnerable commons-lang 2.6 - not needed by this plugin
+        exclude group: 'commons-lang', module: 'commons-lang'
+    }
     testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
 
 }
