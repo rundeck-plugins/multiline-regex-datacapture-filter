@@ -179,5 +179,11 @@ class DataKeyFilterMultiLinesSpec extends Specification {
                                             'test 456',
                                             '',
                                             'done'] | null
+
+        // Test AWS SSM behavior: multiple lines arriving together in a single event
+        true  | null | "(\\w+)\\s(\\d+)" | ['hello 1\nworld 2\ntest 456\n\ndone'] | [test: "456", hello: "1", world: "2"]
+
+        // Test mixed behavior: some lines together, some separate
+        true  | null | "(\\w+)\\s(\\d+)" | ['hello 1\nworld 2', 'test 456', 'done'] | [test: "456", hello: "1", world: "2"]
     }
 }

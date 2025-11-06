@@ -71,6 +71,10 @@ dependencies {
 
 }
 
+test {
+    useJUnitPlatform()
+}
+
 
 
 // task to copy plugin libs to output/lib dir

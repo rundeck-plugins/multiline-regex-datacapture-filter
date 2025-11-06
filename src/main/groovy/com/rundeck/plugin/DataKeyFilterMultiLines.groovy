@@ -131,7 +131,20 @@ If it just capture one group, each matched value will be added for the same key'
     }
 
     private void extractKeyValue(String output){
-        Matcher match = dataPattern.matcher(output)
+        if(captureMultipleKeysValues && output.contains('\n')) {
+            // When capturing multiple values and input contains newlines,
+            // process each line separately to handle different executors
+            output.split('\n').each { line ->
+                if (line.trim()) {
+                    extractSingleLine(line.trim())}
+                }
+            } else {
+            extractSingleLine(output)
+                 }
+    }
+
+   private void extractSingleLine(String line) {
+     Matcher match = dataPattern.matcher(line)
 
         if (match.matches()) {
             def key,value
