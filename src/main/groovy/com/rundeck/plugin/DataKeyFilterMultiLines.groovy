@@ -143,8 +143,8 @@ If it just capture one group, each matched value will be added for the same key'
                  }
     }
 
-   private void extractSingleLine(String line) {
-     Matcher match = dataPattern.matcher(line)
+    private void extractSingleLine(String line) {
+        Matcher match = dataPattern.matcher(line)
 
         if (match.matches()) {
             def key,value
