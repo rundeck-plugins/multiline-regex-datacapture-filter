@@ -5,11 +5,11 @@ plugins {
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
 }
 
-group 'org.rundeck.plugins'
+group 'com.github.rundeck-plugins'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -20,10 +20,9 @@ ext.developers = [
         [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
 ]
 
-ext.rundeckVersion='5.16.0-20251006'
+ext.rundeckVersion='6.0.0-SNAPSHOT'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
-group 'org.rundeck.plugins'
 
 scmVersion {
     ignoreUncommittedChanges = true
@@ -35,6 +34,9 @@ scmVersion {
 
 project.version = scmVersion.version
 
+// Override version for Grails 7 upgrade
+project.version = '1.1.6-grails7-upgrade-test'
+
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
  * plugins.
@@ -45,6 +47,7 @@ ext.pluginClassNames='com.rundeck.plugin.DataKeyFilterMultiLines'
 
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -60,14 +63,14 @@ configurations{
 
 
 dependencies {
-    implementation 'org.apache.groovy:groovy-all:4.0.21'
+    implementation 'org.apache.groovy:groovy-all:4.0.29'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
     implementation(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
         // Exclude vulnerable commons-lang 2.6 - not needed by this plugin
         exclude group: 'commons-lang', module: 'commons-lang'
     }
-    testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
+    testImplementation "org.spockframework:spock-core:2.4-groovy-4.0"
 
 }
 
@@ -94,8 +97,19 @@ jar {
 //set jar task to depend on copyToLib
 jar.dependsOn(copyToLib)
 
+test {
+    useJUnitPlatform()
+    
+    // Java 17+ module access for cglib/Spock mocking
+    jvmArgs = [
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.util=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+    ]
+}
+
 nexusPublishing {
-    packageGroup = 'org.rundeck.plugins'
+    packageGroup = 'com.github.rundeck-plugins'
     repositories {
         sonatype {
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
