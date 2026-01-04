@@ -24,16 +24,6 @@ ext.rundeckVersion='6.0.0-SNAPSHOT'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 
-scmVersion {
-    ignoreUncommittedChanges = true
-    tag {
-        prefix = ''
-        versionSeparator = ''
-    }
-}
-
-project.version = scmVersion.version
-
 // Override version for Grails 7 upgrade
 project.version = '1.1.6-grails7-upgrade-test'
 
