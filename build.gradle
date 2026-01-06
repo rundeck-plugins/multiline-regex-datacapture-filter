@@ -25,7 +25,7 @@ defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 
 // Override version for Grails 7 upgrade
-project.version = '1.1.6-grails7-upgrade-test'
+project.version = '1.1.7-grails7-upgrade-test'
 
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
