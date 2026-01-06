@@ -38,6 +38,13 @@ ext.pluginClassNames='com.rundeck.plugin.DataKeyFilterMultiLines'
 
 repositories {
     mavenLocal()
+    maven {
+        name = 'Central Portal Snapshots'
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+        content {
+            includeGroup('org.rundeck')
+        }
+    }
     mavenCentral()
 }
 
