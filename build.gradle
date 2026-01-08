@@ -3,9 +3,19 @@ plugins {
     id 'java'
     id 'pl.allegro.tech.build.axion-release' version '1.18.12'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'maven-publish'
 }
 
-group 'com.github.rundeck-plugins'
+group 'com.rundeck.plugins'
+
+scmVersion {
+    ignoreUncommittedChanges = false
+    tag {
+        prefix = ''           // NO "v" prefix - see PLUGIN_TAGGING_ARCHITECTURE.md
+        versionSeparator = ''
+    }
+    versionCreator 'simple'  // Use simple version creator (just tag name)
+}
 
 java {
     toolchain {
@@ -24,8 +34,7 @@ ext.rundeckVersion='6.0.0-SNAPSHOT'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 
-// Override version for Grails 7 upgrade
-project.version = '1.1.8-grails7-upgrade-test'
+version = scmVersion.version  // Dynamic version from git tag
 
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
@@ -106,7 +115,7 @@ test {
 }
 
 nexusPublishing {
-    packageGroup = 'com.github.rundeck-plugins'
+    packageGroup = 'com.rundeck.plugins'
     repositories {
         sonatype {
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
