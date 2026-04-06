@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.rundeck.plugins'
+group 'org.rundeck.plugins'
 
 scmVersion {
     ignoreUncommittedChanges = false
@@ -21,6 +21,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 ext.publishName = "Multiline Regex Datacapture Filter ${project.version}"
@@ -72,8 +74,11 @@ dependencies {
     implementation 'org.apache.groovy:groovy-all:4.0.29'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
-    implementation(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
+    compileOnly(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
         // Exclude vulnerable commons-lang 2.6 - not needed by this plugin
+        exclude group: 'commons-lang', module: 'commons-lang'
+    }
+    testImplementation(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
         exclude group: 'commons-lang', module: 'commons-lang'
     }
     testImplementation "org.spockframework:spock-core:2.4-groovy-4.0"
@@ -115,7 +120,7 @@ test {
 }
 
 nexusPublishing {
-    packageGroup = 'com.rundeck.plugins'
+    packageGroup = 'org.rundeck.plugins'
     repositories {
         sonatype {
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
