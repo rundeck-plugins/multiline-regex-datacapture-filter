@@ -3,14 +3,26 @@ plugins {
     id 'java'
     id 'pl.allegro.tech.build.axion-release' version '1.18.12'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'maven-publish'
 }
 
 group 'org.rundeck.plugins'
 
+scmVersion {
+    ignoreUncommittedChanges = false
+    tag {
+        prefix = ''           // NO "v" prefix - see PLUGIN_TAGGING_ARCHITECTURE.md
+        versionSeparator = ''
+    }
+    versionCreator 'simple'  // Use simple version creator (just tag name)
+}
+
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 ext.publishName = "Multiline Regex Datacapture Filter ${project.version}"
@@ -20,20 +32,11 @@ ext.developers = [
         [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
 ]
 
-ext.rundeckVersion='5.16.0-20251006'
+ext.rundeckVersion='6.0.0-alpha1-20260407'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
-group 'org.rundeck.plugins'
 
-scmVersion {
-    ignoreUncommittedChanges = true
-    tag {
-        prefix = ''
-        versionSeparator = ''
-    }
-}
-
-project.version = scmVersion.version
+version = scmVersion.version  // Dynamic version from git tag
 
 /**
  * Set this to a comma-separated list of full classnames of your implemented Rundeck
@@ -45,6 +48,14 @@ ext.pluginClassNames='com.rundeck.plugin.DataKeyFilterMultiLines'
 
 
 repositories {
+    mavenLocal()
+    maven {
+        name = 'Central Portal Snapshots'
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+        content {
+            includeGroup('org.rundeck')
+        }
+    }
     mavenCentral()
 }
 
@@ -60,14 +71,17 @@ configurations{
 
 
 dependencies {
-    implementation 'org.apache.groovy:groovy-all:4.0.21'
+    implementation 'org.apache.groovy:groovy-all:4.0.29'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
-    implementation(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
+    compileOnly(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
         // Exclude vulnerable commons-lang 2.6 - not needed by this plugin
         exclude group: 'commons-lang', module: 'commons-lang'
     }
-    testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
+    testImplementation(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
+        exclude group: 'commons-lang', module: 'commons-lang'
+    }
+    testImplementation "org.spockframework:spock-core:2.4-groovy-4.0"
 
 }
 
@@ -93,6 +107,17 @@ jar {
 }
 //set jar task to depend on copyToLib
 jar.dependsOn(copyToLib)
+
+test {
+    useJUnitPlatform()
+    
+    // Java 17+ module access for cglib/Spock mocking
+    jvmArgs = [
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.util=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+    ]
+}
 
 nexusPublishing {
     packageGroup = 'org.rundeck.plugins'
