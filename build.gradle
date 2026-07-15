@@ -71,7 +71,7 @@ configurations{
 
 
 dependencies {
-    implementation 'org.apache.groovy:groovy-all:4.0.29'
+    implementation 'org.apache.groovy:groovy-all:5.0.7'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
     compileOnly(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
