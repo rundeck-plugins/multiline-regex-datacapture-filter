@@ -1,7 +1,7 @@
 plugins {
     id 'groovy'
     id 'java'
-    id 'pl.allegro.tech.build.axion-release' version '1.21.2'
+    id 'pl.allegro.tech.build.axion-release' version '1.21.3'
     id 'maven-publish'
 }
 
@@ -31,7 +31,7 @@ ext.developers = [
         [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
 ]
 
-ext.rundeckVersion='6.1.0-SNAPSHOT'
+ext.rundeckVersion='6.1.0-20260803'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 
@@ -70,7 +70,7 @@ configurations{
 
 
 dependencies {
-    implementation 'org.apache.groovy:groovy-all:4.0.32'
+    implementation 'org.apache.groovy:groovy-all:4.0.33'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
     compileOnly(group: 'org.rundeck', name: 'rundeck-core', version: rundeckVersion) {
