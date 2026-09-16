@@ -18,7 +18,7 @@ scmVersion {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     withSourcesJar()
     withJavadocJar()
@@ -31,7 +31,7 @@ ext.developers = [
         [id: 'gschueler', name: 'Greg Schueler', email: 'greg@rundeck.com']
 ]
 
-ext.rundeckVersion='6.1.0-20260803'
+ext.rundeckVersion='7.0.0-SNAPSHOT'
 defaultTasks 'clean','build'
 ext.rundeckPluginVersion= '1.2'
 
