@@ -1,7 +1,7 @@
 plugins {
     id 'groovy'
     id 'java'
-    id 'pl.allegro.tech.build.axion-release' version '1.21.3'
+    id 'pl.allegro.tech.build.axion-release' version '1.21.4'
     id 'maven-publish'
 }
 
